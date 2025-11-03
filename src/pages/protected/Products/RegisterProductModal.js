@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const RegisterProductModal = ({ isOpen, onClose }) => {
   const [productName, setProductName] = useState("");
-  const [product_code, setproduct_code] = useState("");
+  const [productCodeNo, setproductCodeNo] = useState("");
   const [category, setCategory] = useState("");
+  const [productType, setProductType] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
@@ -16,7 +18,7 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
     // Validate form
     const errors = {};
     if (!productName) errors.productName = "Product name is required";
-    if (!product_code) errors.product_code = "Product ID is required";
+    if (!productCodeNo) errors.productCodeNo = "Product ID is required";
     if (!category) errors.category = "Category is required";
     if (!price || isNaN(price)) errors.price = "Valid price is required";
     if (!quantity || isNaN(quantity))
@@ -26,26 +28,25 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
       setFormErrors(errors);
       return;
     }
+  // name: req.body.name,
+  //               description: req.body.description,
+  //               productCodeNo: req.body.productCodeNo,
+  //               price: req.body.price,
+  //               quantity: Number(req.body.quantity), // Remember to hash the password in the service
+  //               imageURL: req.body.imageUrl,
+  //               categoryId: Number(req.body.categoryId),
+  //               productType: req.body.productType,
+  //               propertise: JSON.stringify(req.body.propertise),
 
-    // const productData = {
-    //   product_name: productName,
-    //   description: description,
-    //   product_code_no: product_code,
-    //   unit_price: price,
-    //   quantity: quantity, // Remember to hash the password in the service
-    //   image_URL: image,
-    //   category_id: category,
-    //   product_type: "category",
-    //   propertise: "{color:gold}",
-    // };
     const formData = new FormData();
-    formData.append("product_name", productName);
+    formData.append("name", productName);
     formData.append("description", description);
-    formData.append("product_code_no", product_code);
-    formData.append("unit_price", price);
+    formData.append("productCodeNo", productCodeNo);
+    formData.append("price", price);
     formData.append("quantity", quantity);
-    formData.append("category_id", category);
-    formData.append("product_type", "category");
+    // formData.append("categoryId",Number(category));
+    formData.append("categoryId",category);
+    formData.append("productType", productType);
     formData.append("propertise", JSON.stringify({ color: "gold" })); // Ensure this is a string
 
     // If image is a file input, append it
@@ -56,9 +57,8 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
     }
     console.log([...formData.entries()]);
     try {
-      // http://localhost:4000/api/v1/product/getallproduct
       const response = await axios.post(
-        "http://localhost:4000/api/v1/product",
+        "http://localhost:4000/api/v1/products",
         formData,
         {
           headers: {
@@ -67,7 +67,10 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
         }
       );
       console.log("Product created:", response.data);
-    } catch (error) {
+        toast.success(response.data.message);
+        resetForm()
+      } catch (error) {
+      toast.error("✅ Error !");
       console.error("Error creating product:", error);
     }
     // Clear form and close modal
@@ -77,7 +80,7 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
 
   const resetForm = () => {
     setProductName("");
-    setproduct_code("");
+    setproductCodeNo("");
     setCategory("");
     setPrice("");
     setQuantity("");
@@ -114,14 +117,14 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
               </label>
               <input
                 type="text"
-                value={product_code}
-                onChange={(e) => setproduct_code(e.target.value)}
+                value={productCodeNo}
+                onChange={(e) => setproductCodeNo(e.target.value)}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter product ID or SKU"
               />
-              {formErrors.product_code && (
+              {formErrors.productCodeNo && (
                 <p className="text-red-500 text-sm">
-                  {formErrors.product_code}
+                  {formErrors.productCodeNo}
                 </p>
               )}
             </div>
@@ -142,7 +145,24 @@ const RegisterProductModal = ({ isOpen, onClose }) => {
                 <p className="text-red-500 text-sm">{formErrors.category}</p>
               )}
             </div>
-
+            <div>
+              <label className="block text-sm font-medium">ProductType</label>
+              <select
+                value={productType}
+                onChange={(e) => setProductType(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select category</option>
+                <option value="Dell">Dell</option>
+                <option value="HP">HP</option>
+                <option value="Iphone">Iphone</option>
+                <option value="samsung">Samsung</option>
+                {/* <option value="Accessories">Accessories</option> */}
+              </select>
+              {formErrors.category && (
+                <p className="text-red-500 text-sm">{formErrors.category}</p>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium">Price</label>

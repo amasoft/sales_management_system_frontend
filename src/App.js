@@ -10,6 +10,7 @@ import { themeChange } from "theme-change";
 import checkAuth from "./app/auth";
 import initializeApp from "./app/init";
 import AddSales from "./pages/protected/AddSales";
+import { ToastContainer } from "react-toastify";
 
 // Importing pages
 const Layout = lazy(() => import("./containers/Layout"));
@@ -36,11 +37,13 @@ function App() {
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
           {/* <Route path="/newpage" element={<AddSales />} /> */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
+
           <Route path="/register" element={<Register />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/laptop" element={<Product />} />

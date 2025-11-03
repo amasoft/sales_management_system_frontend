@@ -74,7 +74,7 @@ const productsbefo = [
 const ListAllProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
-  const [isUpdateModalOpen, setisUpdateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setisUpdateModalOpen] = useState(true);
   const [selectedProduct, setselectedProduct] = useState(null);
 
   const handleOpenModal = (product) => {
@@ -91,10 +91,11 @@ const ListAllProducts = () => {
   const fetchProducts = async () => {
     try {
       const reponse = await axios.get(
-        "http://localhost:4000/api/v1/product/getallproduct"
+        // "http://localhost:4000/api/v1/product/getallproduct"
+        "http://localhost:4000/api/v1/products"
       );
-      const data = reponse.data.products;
-      console.log(data);
+      console.log(4,JSON.stringify(reponse.data.product));
+      const data = reponse.data.product;
       setProducts(data);
     } catch (error) {
       console.log("the ERROR>>" + error);
@@ -154,20 +155,20 @@ const ListAllProducts = () => {
                 <td className="py-3 px-6 text-left whitespace-nowrap">
                   <div className="flex items-center">
                     <img
-                      src={product.image_URL}
-                      alt={product.product_name}
+                      src={product.imageURL}
+                      alt={product.name}
                       className="w-10 h-10 object-cover rounded-md"
                     />
                   </div>
                 </td>
                 <td className="py-3 px-6 text-left">
-                  <span className="font-medium">{product.product_name}</span>
+                  <span className="font-medium">{product.name}</span>
                 </td>
                 <td className="py-3 px-6 text-left">
-                  <span className="font-medium">{product.category_name}</span>
+                  <span className="font-medium">{product.name}</span>
                 </td>
                 <td className="py-3 px-6 text-center">{product.quantity}</td>
-                <td className="py-3 px-6 text-center">{product.unit_price}</td>
+                <td className="py-3 px-6 text-center">{product.price}</td>
                 <td className="py-3 px-6 text-center">
                   <div className="flex item-center justify-center">
                     {/* <button
